@@ -1,3 +1,4 @@
+import 'package:chat_app/utils/input_deco_design.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -79,9 +80,8 @@ class _AuthScreenState extends State<AuthScreen> {
                       key: _form,
                       child: Column(mainAxisSize: MainAxisSize.min, children: [
                         TextFormField(
-                          decoration: const InputDecoration(
-                            label: Text('Email Address'),
-                          ),
+                          decoration: buildInputDecoration(
+                              context, Icons.email, "Email"),
                           keyboardType: TextInputType.emailAddress,
                           autocorrect: false,
                           textCapitalization: TextCapitalization.none,
@@ -97,10 +97,10 @@ class _AuthScreenState extends State<AuthScreen> {
                             _enteredEmail = newValue!;
                           },
                         ),
+                        const SizedBox(height: 12),
                         TextFormField(
-                          decoration: const InputDecoration(
-                            label: Text('Password'),
-                          ),
+                          decoration: buildInputDecoration(
+                              context, Icons.lock, "Password"),
                           obscureText: true,
                           controller: _password,
                           validator: (value) {
@@ -113,11 +113,11 @@ class _AuthScreenState extends State<AuthScreen> {
                             _enteredPassword = newValue!;
                           },
                         ),
+                        const SizedBox(height: 12),
                         if (!_isLogin)
                           TextFormField(
-                            decoration: const InputDecoration(
-                              label: Text('Confirm Password'),
-                            ),
+                            decoration: buildInputDecoration(
+                                context, Icons.lock, "Confirm Password"),
                             obscureText: true,
                             controller: _confirmPassword,
                             validator: (value) {
