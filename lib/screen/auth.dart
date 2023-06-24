@@ -12,6 +12,8 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   final _form = GlobalKey<FormState>();
+  final TextEditingController _password = TextEditingController();
+  final TextEditingController _confirmPassword = TextEditingController();
 
   bool _isLogin = true;
   String _enteredEmail = '';
@@ -26,25 +28,26 @@ class _AuthScreenState extends State<AuthScreen> {
 
     _form.currentState!.save();
 
-    if (_isLogin) {
-    } else {
-      print(_enteredEmail);
-      print(_enteredPassword);
-      try {
+    try {
+      if (_isLogin) {
+        final userCredentials = await _firebase.signInWithEmailAndPassword(
+          email: _enteredEmail,
+          password: _enteredPassword,
+        );
+      } else {
         final userCredentials = await _firebase.createUserWithEmailAndPassword(
           email: _enteredEmail,
           password: _enteredPassword,
         );
-        print(userCredentials);
-      } on FirebaseAuthException catch (error) {
-        if (error.code == 'email-already-in-use') {}
-        ScaffoldMessenger.of(context).clearSnackBars();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(error.message ?? 'Authentication failed.'),
-          ),
-        );
       }
+    } on FirebaseAuthException catch (error) {
+      if (error.code == 'email-already-in-use') {}
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.message ?? 'Authentication failed.'),
+        ),
+      );
     }
   }
 
@@ -99,6 +102,7 @@ class _AuthScreenState extends State<AuthScreen> {
                             label: Text('Password'),
                           ),
                           obscureText: true,
+                          controller: _password,
                           validator: (value) {
                             if (value == null || value.trim().length < 6) {
                               return 'Password must be at least 6 characters long.';
@@ -109,6 +113,23 @@ class _AuthScreenState extends State<AuthScreen> {
                             _enteredPassword = newValue!;
                           },
                         ),
+                        if (!_isLogin)
+                          TextFormField(
+                            decoration: const InputDecoration(
+                              label: Text('Confirm Password'),
+                            ),
+                            obscureText: true,
+                            controller: _confirmPassword,
+                            validator: (value) {
+                              if (value != _password.text) {
+                                return 'Password does not match.';
+                              }
+                              return null;
+                            },
+                            onSaved: (newValue) {
+                              _enteredPassword = newValue!;
+                            },
+                          ),
                         const SizedBox(height: 12),
                         ElevatedButton(
                           onPressed: _submit,
