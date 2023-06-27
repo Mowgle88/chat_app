@@ -1,4 +1,5 @@
 import 'package:chat_app/utils/input_deco_design.dart';
+import 'package:chat_app/widgets/user_image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -79,6 +80,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     child: Form(
                       key: _form,
                       child: Column(mainAxisSize: MainAxisSize.min, children: [
+                        if (!_isLogin) const UserImagePicker(),
                         TextFormField(
                           decoration: buildInputDecoration(
                               context, Icons.email, "Email"),
