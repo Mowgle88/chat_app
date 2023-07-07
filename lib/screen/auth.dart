@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:chat_app/services/auth_services.dart';
 import 'package:chat_app/utils/input_deco_design.dart';
+import 'package:chat_app/widgets/square_tile.dart';
 import 'package:chat_app/widgets/user_image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -59,6 +61,15 @@ class _AuthScreenState extends State<AuthScreen> {
 
       return;
     }
+
+    // showDialog(
+    //   context: context,
+    //   builder: (context) {
+    //     return Center(
+    //       child: CircularProgressIndicator(),
+    //     );
+    //   },
+    // );
 
     _form.currentState!.save();
 
@@ -217,6 +228,12 @@ class _AuthScreenState extends State<AuthScreen> {
                           const SizedBox(height: 12),
                           if (_isAuthenticating)
                             const CircularProgressIndicator(),
+                          if (_isLogin)
+                            SquareTile(
+                              imagePath: 'assets/images/google.png',
+                              onTap: () => AuthService().signInWithGoogle(),
+                            ),
+                          const SizedBox(height: 12),
                           if (!_isAuthenticating)
                             ElevatedButton(
                               onPressed: _submit,
